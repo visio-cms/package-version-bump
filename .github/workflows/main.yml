@@ -21,6 +21,11 @@ jobs:
     - name: Install dependencies
       run: npm install
 
+    - name: Set Git user identity
+      run: |
+        git config --global user.email "noreply@github.com"
+        git config --global user.name "github"
+
     - name: Determine version bump
       run: |
         # Get the commit messages since the last tag
