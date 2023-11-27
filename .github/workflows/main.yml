@@ -1,10 +1,3 @@
-name: Versioning
-
-on:
-  push:
-    branches:
-      - main
-
 jobs:
   version:
     runs-on: ubuntu-latest
@@ -23,8 +16,8 @@ jobs:
 
     - name: Set Git user identity
       run: |
-        git config --global user.email "noreply@github.com"
-        git config --global user.name "github"
+        git config --global user.email "you@example.com"
+        git config --global user.name "Your Name"
 
     - name: Determine version bump
       run: |
@@ -53,6 +46,9 @@ jobs:
 
     - name: Push changes
       run: |
-        # Push the new tag and package.json changes
-        git push
-        git push --tags
+        # Configure Git with the provided token
+        git config --global credential.helper store
+        git remote set-url origin "https://${{ secrets.GITHUB_TOKEN }}@github.com/owner/repo.git"
+
+        # Push the changes directly to the main branch
+        git push origin main
