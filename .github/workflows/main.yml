@@ -22,7 +22,7 @@ jobs:
         with:
           node-version: 12
       - name: "Automated Version Bump"
-        uses: "visio-cms/package-version-bump"
+        uses: "visio-cms/package-version-bump@main"
         with:
           tag-prefix: ''
         env:
