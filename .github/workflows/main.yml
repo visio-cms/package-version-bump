@@ -1,15 +1,31 @@
-on: [push]
+name: "Bump Version"
+
+on:
+  push:
+    branches:
+      - "main"
 
 jobs:
-  hello_world_job:
+  bump-version:
+    name: "Bump Version on main"
     runs-on: ubuntu-latest
-    name: A job to say hello
+
     steps:
-      - name: Hello world action step
-        id: hello
-        uses: visio-cms/package-version-bump@v1.1
+      - name: "Checkout source code"
+        uses: "actions/checkout@v2"
         with:
-          who-to-greet: 'Mona the Octocat'
-      # Use the output from the `hello` step
-      - name: Get the output time
-        run: echo "The time was ${{ steps.hello.outputs.time }}"
+          ref: ${{ github.ref }}
+      - name: "cat package.json"
+        run: cat ./package.json
+      - name: "Setup Node.js"
+        uses: "actions/setup-node@v1"
+        with:
+          node-version: 12
+      - name: "Automated Version Bump"
+        uses: "visio-cms/package-version-bump"
+        with:
+          tag-prefix: ''
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: "cat package.json"
+        run: cat ./package.json
