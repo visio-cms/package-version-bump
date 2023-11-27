@@ -55,7 +55,7 @@ jobs:
       run: |
         # Configure Git with the provided token
         git config --global credential.helper store
-        git remote set-url origin "https://${{ secrets.GITHUB_TOKEN }}@github.com/owner/visio-cms/package-version-bump.git"
+        git remote set-url origin "https://${{ secrets.GITHUB_TOKEN }}@github.com/visio-cms/package-version-bump.git"
 
         # Push the changes directly to the main branch
         git push origin main
