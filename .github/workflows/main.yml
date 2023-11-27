@@ -1,31 +1,53 @@
-name: "Bump Version"
+name: Versioning
 
 on:
   push:
     branches:
-      - "main"
+      - main
 
 jobs:
-  bump-version:
-    name: "Bump Version on main"
+  version:
     runs-on: ubuntu-latest
 
     steps:
-      - name: "Checkout source code"
-        uses: "actions/checkout@v2"
-        with:
-          ref: ${{ github.ref }}
-      - name: "cat package.json"
-        run: cat ./package.json
-      - name: "Setup Node.js"
-        uses: "actions/setup-node@v1"
-        with:
-          node-version: 18
-      - name: "Automated Version Bump"
-        uses: "visio-cms/package-version-bump@main"
-        with:
-          tag-prefix: ''
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: "cat package.json"
-        run: cat ./package.json
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 14
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Determine version bump
+      run: |
+        # Get the commit messages since the last tag
+        COMMIT_MESSAGES=$(git log --format=%B $(git describe --tags --abbrev=0)..HEAD)
+
+        # Determine the version bump based on commit messages
+        if [[ $COMMIT_MESSAGES == *"feat"* ]]; then
+          BUMP="major"
+        elif [[ $COMMIT_MESSAGES == *"fix"* ]]; then
+          BUMP="minor"
+        elif [[ $COMMIT_MESSAGES == *"dependency"* ]]; then
+          BUMP="patch"
+        else
+          BUMP="patch"
+        fi
+
+        echo "Version bump: $BUMP"
+        echo "::set-output name=bump::$BUMP"
+      id: version
+
+    - name: Bump version
+      run: |
+        # Bump the version using npm version
+        npm version ${{ steps.version.outputs.bump }}
+
+    - name: Push changes
+      run: |
+        # Push the new tag and package.json changes
+        git push
+        git push --tags
