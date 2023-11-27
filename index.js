@@ -26,7 +26,6 @@ Toolkit.run(async (tools) => {
   }
 
   let version;
-  console.log(tools);
   tools.outputs.update = "true";
   if (messages.map((message) => message.includes("patch")).includes(true)) {
     version = "patch";
