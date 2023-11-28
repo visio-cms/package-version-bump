@@ -24,8 +24,8 @@ jobs:
 
     - name: Set Git user identity
       run: |
-        git config --global user.email "visiocms@gmail.com"
-        git config --global user.name "visio-cms-bot"
+        git config --global user.email "adolfokrah@gmail.com"
+        git config --global user.name "adolfokrah"
 
     - name: Determine version bump
       run: |
@@ -56,7 +56,7 @@ jobs:
       run: |
         # Configure Git with the stored PAT
         git config --global credential.helper store
-        git remote set-url origin "https://${{secrets.BOT_ACCESS_TOKEN}}@github.com/visio-cms/package-version-bump.git"
+        git remote set-url origin "https://${{secrets.GH_TOKEN}}@github.com/visio-cms/package-version-bump.git"
 
         # Push the changes directly to the main branch
         git push origin main 
