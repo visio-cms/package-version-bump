@@ -6,56 +6,28 @@ on:
       - main
 
 jobs:
-  version:
-    runs-on: ubuntu-latest
-
+  build:
+    if: github.event.commits[0].author.name != 'GitHubActions'
+    runs-on: ubuntu-18.04
     steps:
-    - name: Checkout code
+    - name: Checkout repo
       uses: actions/checkout@v2
-
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
       with:
-        node-version: 14
-
-    - name: Install dependencies
+        fetch-depth: 0
+        token: ${{ secrets.PAT }}
+    - name: Configure git
+      run: |
+        git config user.name "GitHubActions"
+        git config user.email "<>"
+    - name: Install NPM Packages
       run: npm install
-
-    - name: Set Git user identity
+      env:
+        NODE_AUTH_TOKEN: $\{{ secrets.PAT }}
+    - name: Version and Package
+      run: npm version patch --force
+      env:
+        NODE_AUTH_TOKEN: $\{{ secrets.PAT }}
+    - name: Update git
       run: |
-        git config --global user.email "visiocms@gmail.com"
-        git config --global user.name "visio-cms-bot"
-
-    - name: Determine version bump
-      run: |
-        # Get the commit messages since the last tag
-        COMMIT_MESSAGES=$(git log --format=%B $(git describe --tags --abbrev=0)..HEAD)
-
-        # Determine the version bump based on commit messages
-        if [[ $COMMIT_MESSAGES == *"feat"* ]]; then
-          BUMP="major"
-        elif [[ $COMMIT_MESSAGES == *"fix"* ]]; then
-          BUMP="minor"
-        elif [[ $COMMIT_MESSAGES == *"dependency"* ]]; then
-          BUMP="patch"
-        else
-          BUMP="patch"
-        fi
-
-        echo "Version bump: $BUMP"
-        echo "::set-output name=bump::$BUMP"
-      id: version
-
-    - name: Bump version
-      run: |
-        # Bump the version using npm version
-        npm version ${{ steps.version.outputs.bump }}
-
-    - name: Push changes
-      run: |
-        # Configure Git with the stored PAT
-        git config --global credential.helper store
-        git remote set-url origin "https://${{ secrets.BOT_ACCESS_TOKEN }}@github.com/visio-cms/package-version-bump.git"
-
-        # Push the changes directly to the main branch
-        git push --force origin main 
+        git push
+        git push --tags
