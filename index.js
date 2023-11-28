@@ -86,7 +86,6 @@ Toolkit.run(async (tools) => {
       `ci: ${commitMessage} ${newVersion}`,
     ]);
 
-    // now go to the actual branch to perform the same versioning
     await tools.runInWorkspace("git", ["checkout", currentBranch]);
     await tools.runInWorkspace("npm", [
       "version",
