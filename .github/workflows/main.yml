@@ -54,7 +54,7 @@ jobs:
     - name: Push changes
       run: |
         # Configure Git with the stored PAT
-        echo ${{secrets.GITHUB_TOKEN}}
+        echo "Token: ${secrets.GITHUB_TOKEN:0:5}..."
         git config --global credential.helper store
         git remote set-url origin "https://${{ secrets.GITHUB_TOKEN }}@github.com/visio-cms/package-version-bump.git"
 
