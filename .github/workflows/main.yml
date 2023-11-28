@@ -25,7 +25,7 @@ jobs:
     - name: Set Git user identity
       run: |
         git config --global user.email "adolfokrah@gmail.com"
-        git config --global user.name "addie233"
+        git config --global user.name "adolfokrah"
 
     - name: Determine version bump
       run: |
