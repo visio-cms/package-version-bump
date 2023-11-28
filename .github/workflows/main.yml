@@ -60,4 +60,4 @@ jobs:
         git remote set-url origin "https://${{ secrets.BOT_ACCESS_TOKEN }}@github.com/visio-cms/package-version-bump.git"
 
         # Push the changes directly to the main branch
-        git push --force origin main 
+        git push origin main 
